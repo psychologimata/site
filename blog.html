@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog | Psychologimata</title>
+  <style>
+    :root{
+      --bg-start:rgb(219, 166, 121);
+      --bg-end:rgb(242, 242, 247);
+      --fg:#000000;
+      --muted:#3f3f3f;
+      --line:#d9d9d9;
+      --max:920px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      background:linear-gradient(to bottom, var(--bg-start) 0%, var(--bg-end) 100%);
+      color:var(--fg);
+      font-family:Georgia, "Times New Roman", serif;
+    }
+    .page{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:40px 20px 64px;
+    }
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:14px;
+      margin-bottom:28px;
+    }
+    a{color:var(--fg);text-decoration:none}
+    a:hover{text-decoration:underline}
+    h1{
+      margin:0 0 16px;
+      font-size:clamp(30px,5vw,44px);
+      font-weight:600;
+      letter-spacing:.04em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <a href="index.html" aria-label="Επιστροφή στην αρχική">← Αρχική</a>
+      <a href="profile.html">Προφίλ</a>
+    </header>
+
+    <h1>Blog</h1>
+  </main>
+</body>
+</html>

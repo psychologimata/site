@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Psychologimata</title>
+  <meta name="description" content="Minimal landing page with fullscreen menu and scrolling image." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg:#dba679;
+      --bg-light:#f2f2f7;
+      --fg:#f2f2f2;
+      --muted:rgba(242,242,242,.72);
+      --muted2:rgba(242,242,242,.5);
+      --line:rgba(242,242,242,.18);
+      --pad:clamp(16px, 2.2vw, 28px);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --brand-font: "Cinzel", serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+    }
+    html{
+      background:linear-gradient(to bottom, rgb(219, 166, 121) 0%, rgb(242, 242, 247) 100%);
+      background-repeat:no-repeat;
+      background-size:100% 100%;
+    }
+    body{
+      min-height:100vh;
+      background:transparent;
+      color:var(--fg);
+      font-family:var(--font);
+      letter-spacing:.02em;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    a:hover{opacity:.78}
+
+    /* Top bar */
+    .topbar{
+      position:fixed;
+      inset:0 0 auto 0;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding:var(--pad);
+      z-index:60;
+      pointer-events:none;
+    }
+    .brand{
+      pointer-events:auto;
+      display:inline-flex;
+      align-items:center;
+      line-height:1;
+    }
+    .brand img{
+      display:block;
+      width:clamp(100px, 14vw, 160px);
+      height:auto;
+    }
+
+    .menu-btn{
+      pointer-events:auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:92px;
+      padding:10px 16px;
+      border:none;
+      border-radius:999px;
+      background:transparent;
+      color:var(--fg);
+      font:500 12px/1 var(--mono);
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      cursor:pointer;
+      user-select:none;
+      box-shadow:none;
+      appearance:none;
+      -webkit-appearance:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .menu-btn:focus,
+    .menu-btn:focus-visible{
+      outline:none;
+      box-shadow:none;
+    }
+    .burger{
+      width:38px;height:14px;position:relative;display:inline-block;
+    }
+    .burger span{
+      position:absolute;
+      left:0;
+      right:0;
+      top:50%;
+      height:1px;
+      background:#000;
+      transform-origin:center;
+      transition:transform .25s ease;
+    }
+    .burger span:nth-child(1){transform:translateY(-4px)}
+    .burger span:nth-child(2){transform:translateY(4px)}
+
+    .menu-btn[aria-expanded="true"] .burger span:nth-child(1){transform:translateY(0) rotate(45deg)}
+    .menu-btn[aria-expanded="true"] .burger span:nth-child(2){transform:translateY(0) rotate(-45deg)}
+
+    /* Main stage */
+    .stage{
+      position:relative;
+      height:92vh;
+      width:100vw;
+      overflow:hidden;
+    }
+
+    /* Scrolling image panel */
+    .image-window{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      isolation:isolate;
+      z-index:1;
+      pointer-events:none;
+      background:#fff;
+    }
+
+    /*
+      Put a tall image inside.
+      It moves only when the user scrolls.
+    */
+    .image-track{
+      position:absolute;
+      inset:0 0 auto 0;
+      height:160vh;
+      will-change:transform;
+      transform:translate3d(0,-70px,0);
+      transition:none;
+      opacity:.36;
+    }
+
+    .image-track img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:contrast(1.02) saturate(.98);
+    }
+
+    /* Dark veil for readability */
+    .veil{
+      position:absolute;
+      inset:0;
+      background:none;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    /* Center copy */
+    .copy{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:calc(var(--pad) * 2);
+      z-index:3;
+      text-align:center;
+      transform:translateY(-6vh);
+    }
+    .copy-inner{
+      max-width:min(680px, 92vw);
+    }
+    .title{
+      margin:0;
+      font-family:var(--brand-font);
+      color:#000;
+      text-transform:uppercase;
+      font-weight:500;
+      letter-spacing:.24em;
+      font-size:clamp(22px, 4vw, 44px);
+      line-height:1.05;
+    }
+    .desc{
+      margin:18px auto 0;
+      color:#000;
+      font-size:clamp(16px, 1.9vw, 22px);
+      line-height:1.6;
+      letter-spacing:.06em;
+      max-width:56ch;
+    }
+
+    /* Contact section */
+    .contact{
+      position:relative;
+      z-index:5;
+      padding:clamp(40px, 7vw, 88px) var(--pad);
+      background:none;
+      color:#4a3426;
+    }
+    .contact-bridge{
+      position:relative;
+      z-index:5;
+      width:min(1040px, 100%);
+      margin:0 auto;
+      padding:20px var(--pad) 0;
+      display:flex;
+      justify-content:center;
+    }
+    .contact-bridge .contact-links{
+      align-items:center;
+      text-align:center;
+    }
+    .contact-wrap{
+      width:min(1040px, 100%);
+      margin:0 auto;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:clamp(24px, 5vw, 70px);
+    }
+    .contact-left,
+    .contact-right{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .contact-left{
+      min-width:min(280px, 100%);
+    }
+    .contact-left h2{
+      margin:0 0 4px;
+      font-family:var(--brand-font);
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:clamp(20px, 3vw, 30px);
+    }
+    .contact-links{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .contact-note{
+      margin:0;
+      color:rgba(74,52,38,.7);
+      font:500 12px/1.6 var(--mono);
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .contact-right{
+      flex:1;
+      min-width:min(420px, 100%);
+    }
+    .contact-form{
+      width:100%;
+      display:grid;
+      gap:12px;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .field{
+      display:grid;
+      gap:8px;
+    }
+    .field label{
+      font:500 12px/1.2 var(--brand-font);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#000;
+    }
+    .field input,
+    .field textarea{
+      width:100%;
+      border:1px solid rgba(74,52,38,.28);
+      border-radius:14px;
+      background:transparent;
+      color:#000;
+      font:400 15px/1.45 var(--font);
+      letter-spacing:normal;
+      text-transform:none;
+      padding:12px 14px;
+      outline:none;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder{
+      color:rgba(0,0,0,.65);
+    }
+    .field input:focus,
+    .field textarea:focus{
+      border-color:rgba(74,52,38,.55);
+      background:transparent;
+    }
+    .field textarea{
+      resize:vertical;
+      min-height:140px;
+    }
+    .email-link{
+      color:#3b2a1f;
+      font-size:clamp(13px, 1.6vw, 15px);
+      letter-spacing:.14em;
+      border:1px solid rgba(74,52,38,.38);
+      background:transparent;
+      border-radius:999px;
+      padding:8px 14px;
+    }
+    .email-link:hover{
+      opacity:1;
+      background:transparent;
+      border-color:rgba(74,52,38,.6);
+    }
+    .social-icon{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:24px;
+      height:24px;
+      color:#4a3426;
+    }
+    .social-icon svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+    .form-submit{
+      margin-top:4px;
+      justify-self:start;
+      border:1px solid rgba(74,52,38,.4);
+      border-radius:999px;
+      background:transparent;
+      color:#000;
+      padding:10px 18px;
+      font:600 12px/1 var(--brand-font);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .form-submit:hover{
+      background:transparent;
+      border-color:rgba(74,52,38,.6);
+    }
+    .form-submit:disabled{
+      opacity:.62;
+      cursor:wait;
+    }
+    .form-status{
+      margin:0;
+      min-height:1.4em;
+      font:500 13px/1.4 var(--brand-font);
+    }
+    .form-status[data-state="info"]{color:#5d4637}
+    .form-status[data-state="success"]{color:#1f6b36}
+    .form-status[data-state="error"]{color:#a12727}
+
+    /* Fullscreen menu overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:50;
+      background:linear-gradient(to bottom, rgb(219, 166, 121) 0%, rgb(242, 242, 247) 100%);
+      color:#1f1712;
+      backdrop-filter:none;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      isolation:isolate;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease;
+    }
+    .overlay::before{
+      content:"";
+      position:absolute;
+      inset:-8% 0 0;
+      background:url("yarn.png") center/cover no-repeat;
+      opacity:.2;
+      filter:contrast(1.02) saturate(.96);
+      pointer-events:none;
+    }
+    .overlay::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        to bottom,
+        rgba(219,166,121,.08) 0%,
+        rgba(242,242,247,.06) 100%
+      );
+      pointer-events:none;
+    }
+    .overlay[data-open="true"]{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .overlay-inner{
+      position:relative;
+      z-index:1;
+      width:min(900px, 92vw);
+      padding:calc(var(--pad) * 1.5);
+      display:grid;
+      gap:22px;
+    }
+
+    .overlay-nav{
+      display:grid;
+      gap:14px;
+      text-align:center;
+    }
+
+    .overlay-nav a{
+      font-size:clamp(22px, 4vw, 44px);
+      font-weight:400;
+      font-family:var(--brand-font);
+      color:#000;
+      text-transform:none;
+      letter-spacing:.06em;
+      padding:10px 0;
+    }
+    .overlay-nav a:focus,
+    .overlay-nav a:focus-visible{
+      outline:none;
+      box-shadow:none;
+    }
+
+    .overlay-meta{
+      margin-top:10px;
+      border-top:1px solid rgba(74,52,38,.28);
+      padding-top:18px;
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      color:rgba(74,52,38,.82);
+      font:500 12px/1.4 var(--mono);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .image-track{transition:none}
+      .overlay{transition:none}
+      .burger span{transition:none}
+    }
+
+    /* Small screens */
+    @media (max-width:520px){
+      .menu-btn{padding:10px}
+      .copy{transform:translateY(-4vh)}
+      .contact{padding-top:32px}
+      .contact-wrap{flex-direction:column}
+      .contact-right,
+      .contact-left{min-width:100%}
+      .form-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar" aria-label="Top navigation">
+    <a class="brand" href="#" aria-label="Home">
+      <!-- <img src="logo.png" alt="Psychologimata logo" /> -->
+    </a>
+
+    <button class="menu-btn" id="menuBtn" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
+      <span class="burger" aria-hidden="true"><span></span><span></span></span>
+    </button>
+  </header>
+
+  <main class="stage">
+    <section class="image-window" aria-label="Hero image">
+      <div class="image-track" id="imageTrack">
+        <!-- Replace with your own image. This one is a safe placeholder. -->
+        <img
+          src="yarn.png"
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <div class="veil" aria-hidden="true"></div>
+    </section>
+
+    <section class="copy" aria-label="Intro">
+      <div class="copy-inner">
+        <h1 class="title">Psychologimata</h1>
+        <p class="desc">
+             ΥΠΗΡΕΣΙΕΣ <br>
+Ψυχολογική αξιολόγηση <br>
+Ατομική ψυχοθεραπεία & συμβουλευτική <br>
+Συμβουλευτική γονέων
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <section class="contact" id="contact" aria-label="Contact form">
+    <div class="contact-wrap">
+      <div class="contact-left">
+        <h2>Επικοινωνία</h2>
+        <p class="contact-note">Κατόπιν ραντεβού</p>
+      </div>
+
+      <div class="contact-right">
+        <form class="contact-form" action="/api/contact" method="post" novalidate autocapitalize="none" data-api-url="https://https://psychologimata-enadcnckc8gdcraz.swedencentral-01.azurewebsites.net/api/contact">
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Όνομα</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" />
+            </div>
+            <div class="field">
+              <label for="phone">Τηλέφωνο</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" required />
+            </div>
+            <div class="field">
+              <label for="subject">Θέμα</label>
+              <input id="subject" name="subject" type="text" required />
+            </div>
+          </div>
+          <div class="field">
+            <label for="message">Μήνυμα</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button class="form-submit" type="submit">Αποστολή</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+    <div class="contact-bridge" aria-label="Social links">
+      <div class="contact-links">
+        <a class="social-icon" href="https://instagram.com/psychologimata" target="_blank" rel="noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="currentColor">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5a4.25 4.25 0 0 0-4.25-4.25h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm5.25-2.13a1.13 1.13 0 1 1 0 2.26 1.13 1.13 0 0 1 0-2.26z"/>
+          </svg>
+        </a>
+        <a class="email-link" href="mailto:psychologimata@outlook.com">psychologimata@outlook.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fullscreen Menu -->
+  <div class="overlay" id="menu" role="dialog" aria-modal="true" aria-label="Menu" data-open="false">
+    <div class="overlay-inner">
+      <nav class="overlay-nav" aria-label="Σύνδεσμοι μενού">
+        <a href="profile.html">Προφίλ</a>
+        <a href="blog.html">Blog - newsletter</a>
+      </nav>
+
+      <div class="overlay-meta">
+        <span>By appointment only</span>
+        <span><a href="mailto:psychologimata@outlook.com" data-close>Email</a></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('menu');
+    const closeLinks = overlay.querySelectorAll('[data-close]');
+
+    // Basic focus trap
+    const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    let lastFocused = null;
+
+    function openMenu(){
+      lastFocused = document.activeElement;
+      overlay.dataset.open = 'true';
+      menuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      edgeOffset = 0;
+      edgeVelocity = 0;
+      stopMomentum();
+
+      // Focus first link
+      const first = overlay.querySelector(focusableSelector);
+      first?.focus();
+    }
+
+    function closeMenu(){
+      overlay.dataset.open = 'false';
+      menuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      startMomentum();
+      lastFocused?.focus();
+    }
+
+    function toggleMenu(){
+      const isOpen = overlay.dataset.open === 'true';
+      isOpen ? closeMenu() : openMenu();
+    }
+
+    menuBtn.addEventListener('click', toggleMenu);
+
+    // Click outside inner area closes
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) closeMenu();
+    });
+
+    // Close on link click
+    closeLinks.forEach(a => a.addEventListener('click', () => closeMenu()));
+
+    // Escape closes
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && overlay.dataset.open === 'true') closeMenu();
+    });
+
+    // Focus trap when open
+    overlay.addEventListener('keydown', (e) => {
+      if(overlay.dataset.open !== 'true') return;
+      if(e.key !== 'Tab') return;
+
+      const focusables = Array.from(overlay.querySelectorAll(focusableSelector))
+        .filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+
+      if(!focusables.length) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if(e.shiftKey && document.activeElement === first){
+        e.preventDefault();
+        last.focus();
+      } else if(!e.shiftKey && document.activeElement === last){
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    const contactForm = document.querySelector('.contact-form');
+    const formStatus = document.getElementById('formStatus');
+    const submitButton = contactForm?.querySelector('.form-submit');
+    const submitButtonText = submitButton?.textContent || 'Αποστολή';
+
+    function fieldLabel(field){
+      const label = document.querySelector(`label[for="${field.id}"]`);
+      return label ? label.textContent.trim() : 'αυτό το πεδίο';
+    }
+
+    function setGreekValidation(field){
+      field.setCustomValidity('');
+
+      if(field.validity.valueMissing){
+        field.setCustomValidity(`Παρακαλώ συμπληρώστε το πεδίο «${fieldLabel(field)}».`);
+        return;
+      }
+
+      if(field.type === 'email' && (field.validity.typeMismatch || field.validity.patternMismatch)){
+        field.setCustomValidity('Παρακαλώ εισάγετε έγκυρη διεύθυνση email (π.χ. name@example.com).');
+      }
+    }
+
+    function resolveContactApiUrl(){
+      const configuredApiUrl = contactForm?.dataset.apiUrl || window.CONTACT_API_URL;
+      if(configuredApiUrl){
+        return configuredApiUrl;
+      }
+
+      const isLocalPage = window.location.protocol === 'file:' ||
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1';
+
+      if(isLocalPage){
+        return 'http://localhost:5050/api/contact';
+      }
+      return '/api/contact';
+    }
+
+    function setFormStatus(state, message){
+      if(!formStatus) return;
+      formStatus.dataset.state = state;
+      formStatus.textContent = message;
+    }
+
+    function setSubmittingState(isSubmitting){
+      if(!submitButton) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? 'Αποστολή...' : submitButtonText;
+    }
+
+    if(contactForm){
+      contactForm.addEventListener('invalid', (e) => {
+        const field = e.target;
+        if(!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+        setGreekValidation(field);
+      }, true);
+
+      contactForm.addEventListener('input', (e) => {
+        const field = e.target;
+        if(!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+        field.setCustomValidity('');
+        if(formStatus?.dataset.state === 'error'){
+          setFormStatus('', '');
+        }
+      });
+
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fields = contactForm.querySelectorAll('input, textarea');
+        fields.forEach(setGreekValidation);
+
+        if(!contactForm.checkValidity()){
+          contactForm.reportValidity();
+          return;
+        }
+
+        setSubmittingState(true);
+        setFormStatus('info', 'Αποστολή μηνύματος...');
+
+        const payload = Object.fromEntries(new FormData(contactForm).entries());
+        const apiUrl = resolveContactApiUrl();
+
+        try{
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          let responseData = null;
+          const contentType = response.headers.get('content-type') || '';
+          if(contentType.includes('application/json')){
+            responseData = await response.json();
+          }
+
+          if(!response.ok){
+            const firstValidationMessage = responseData?.errors
+              ? Object.values(responseData.errors).flat()[0]
+              : null;
+            const fallbackMessage = 'Παρουσιάστηκε σφάλμα κατά την αποστολή. Παρακαλώ δοκιμάστε ξανά.';
+            const errorMessage = firstValidationMessage || responseData?.detail || fallbackMessage;
+            throw new Error(errorMessage);
+          }
+
+          contactForm.reset();
+          setFormStatus('success', responseData?.message || 'Το μήνυμά σας στάλθηκε επιτυχώς.');
+        } catch (error){
+          const message = error instanceof Error
+            ? error.message
+            : 'Παρουσιάστηκε σφάλμα κατά την αποστολή. Παρακαλώ δοκιμάστε ξανά.';
+          setFormStatus('error', message);
+        } finally {
+          setSubmittingState(false);
+        }
+      });
+    }
+
+    const track = document.getElementById('imageTrack');
+
+    let imageOffset = 0;
+    let minImageOffset = 0;
+    let edgeOffset = 0;
+    let edgeVelocity = 0;
+    let animationFrameId = null;
+
+    const followStrength = 0.072;
+    const edgeWheelStrength = 0.02;
+    const edgeSpring = 0.12;
+    const edgeDamping = 0.8;
+    const maxEdgeOvershoot = 16;
+    const edgeVelocityLimit = 4.5;
+    const startImageOffset = -70;
+
+    function clamp(value, min, max){
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function renderTrack(){
+      track.style.transform = `translate3d(0, ${imageOffset}px, 0)`;
+    }
+
+    function getBaseImageOffset(){
+      const scrollTop = window.scrollY || window.pageYOffset || 0;
+      const maxScrollTop = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const progress = clamp(scrollTop / maxScrollTop, 0, 1);
+      const topOffset = Math.max(startImageOffset, minImageOffset);
+      return topOffset + (minImageOffset - topOffset) * progress;
+    }
+
+    function getPageEdgeState(){
+      const scrollTop = window.scrollY || window.pageYOffset || 0;
+      const maxScrollTop = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+      return {
+        atTop: scrollTop <= 1,
+        atBottom: scrollTop >= maxScrollTop - 1
+      };
+    }
+
+    function stopMomentum(){
+      if(animationFrameId !== null){
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    }
+
+    function animateMomentum(){
+      edgeVelocity += -edgeOffset * edgeSpring;
+      edgeVelocity *= edgeDamping;
+      edgeVelocity = clamp(edgeVelocity, -edgeVelocityLimit, edgeVelocityLimit);
+      edgeOffset += edgeVelocity;
+      edgeOffset = clamp(edgeOffset, -maxEdgeOvershoot, maxEdgeOvershoot);
+
+      if(Math.abs(edgeOffset) < 0.01 && Math.abs(edgeVelocity) < 0.01){
+        edgeOffset = 0;
+        edgeVelocity = 0;
+      }
+
+      const targetOffset = getBaseImageOffset() + edgeOffset;
+      imageOffset += (targetOffset - imageOffset) * followStrength;
+      renderTrack();
+
+      animationFrameId = requestAnimationFrame(animateMomentum);
+    }
+
+    function startMomentum(){
+      if(animationFrameId === null){
+        animationFrameId = requestAnimationFrame(animateMomentum);
+      }
+    }
+
+    function updateImageBounds(){
+      const extraHeight = Math.max(track.offsetHeight - window.innerHeight, 0);
+      minImageOffset = -extraHeight;
+      imageOffset = getBaseImageOffset();
+      renderTrack();
+      startMomentum();
+    }
+
+    window.addEventListener('wheel', (e) => {
+      if(overlay.dataset.open === 'true') return;
+      const { atTop, atBottom } = getPageEdgeState();
+      const pullingPastTop = atTop && e.deltaY < 0;
+      const pullingPastBottom = atBottom && e.deltaY > 0;
+
+      if(pullingPastTop || pullingPastBottom){
+        const normalizedDelta = clamp(e.deltaY, -90, 90);
+        edgeVelocity -= normalizedDelta * edgeWheelStrength;
+        edgeVelocity = clamp(edgeVelocity, -edgeVelocityLimit, edgeVelocityLimit);
+      }
+    }, { passive:true });
+
+    window.addEventListener('scroll', startMomentum, { passive:true });
+
+    window.addEventListener('resize', updateImageBounds);
+    updateImageBounds();
+  </script>
+</body>
+</html>
