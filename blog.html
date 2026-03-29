@@ -3,57 +3,636 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f1d8d6" />
   <title>Blog | Psychologimata</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --bg-start:rgb(219, 166, 121);
-      --bg-end:rgb(242, 242, 247);
-      --fg:#000000;
-      --muted:#3f3f3f;
-      --line:#d9d9d9;
-      --max:920px;
+      --bg:#f1d8d6;
+      --bg-light:#f7ecea;
+      --fg:#2d1d1a;
+      --muted:rgba(45,29,26,.74);
+      --line:rgba(45,29,26,.14);
+      --pad:clamp(16px, 2.2vw, 28px);
+      --font:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --brand-font:"Cinzel", serif;
+      --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
+
     *{box-sizing:border-box}
     html,body{
       margin:0;
       padding:0;
       min-height:100%;
-      background:linear-gradient(to bottom, var(--bg-start) 0%, var(--bg-end) 100%);
+      background:var(--bg);
+    }
+    body{
+      min-height:100vh;
+      min-height:100dvh;
       color:var(--fg);
-      font-family:Georgia, "Times New Roman", serif;
+      font-family:var(--font);
+      letter-spacing:.02em;
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .page{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:40px 20px 64px;
+    body::before{
+      content:"";
+      position:fixed;
+      inset:-8% 0 0;
+      background:url("yarn.png") center/cover no-repeat;
+      opacity:.12;
+      filter:contrast(1.08) saturate(1.02) brightness(.95);
+      pointer-events:none;
+      z-index:0;
     }
-    .top{
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:linear-gradient(
+        to bottom,
+        rgba(241,216,214,.3) 0%,
+        rgba(247,236,234,.6) 100%
+      );
+      pointer-events:none;
+      z-index:0;
+    }
+
+    a{color:inherit;text-decoration:none}
+    a:hover{opacity:.78}
+
+    .topbar{
+      position:fixed;
+      inset:0 0 auto 0;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding:var(--pad);
+      z-index:60;
+      pointer-events:none;
+    }
+    .brand{
+      pointer-events:auto;
+      display:inline-flex;
+      align-items:center;
+      color:#000;
+      font-family:var(--brand-font);
+      font-size:clamp(15px, 1.8vw, 19px);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      line-height:1;
+    }
+    .topbar-actions{
+      pointer-events:auto;
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom:1px solid var(--line);
-      padding-bottom:14px;
-      margin-bottom:28px;
+      gap:10px;
     }
-    a{color:var(--fg);text-decoration:none}
-    a:hover{text-decoration:underline}
-    h1{
-      margin:0 0 16px;
-      font-size:clamp(30px,5vw,44px);
-      font-weight:600;
+    .lang-switch{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .lang-btn{
+      display:grid;
+      place-items:center;
+      width:34px;
+      height:34px;
+      padding:0;
+      border:1px solid rgba(45,29,26,.2);
+      border-radius:999px;
+      background:rgba(247,236,234,.72);
+      color:#2d1d1a;
+      cursor:pointer;
+      box-shadow:none;
+      appearance:none;
+      -webkit-appearance:none;
+      transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease, background .2s ease;
+    }
+    .lang-btn:hover{
+      border-color:rgba(45,29,26,.45);
+      transform:translateY(-1px);
+    }
+    .lang-btn:focus,
+    .lang-btn:focus-visible{
+      outline:none;
+      border-color:#2d1d1a;
+      box-shadow:0 0 0 3px rgba(45,29,26,.12);
+    }
+    .lang-btn.is-active,
+    .lang-btn[aria-pressed="true"]{
+      border:2px solid #2d1d1a;
+      background:rgba(255,255,255,.92);
+      box-shadow:0 0 0 3px rgba(45,29,26,.1);
+    }
+    .lang-flag{
+      position:relative;
+      display:block;
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      overflow:hidden;
+      box-shadow:inset 0 0 0 1px rgba(45,29,26,.12);
+    }
+    .lang-flag--greece{
+      background:repeating-linear-gradient(
+        to bottom,
+        #0d5eaf 0 2px,
+        #ffffff 2px 4px
+      );
+    }
+    .lang-flag--greece::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      width:9px;
+      height:9px;
+      background:
+        linear-gradient(to right, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+        linear-gradient(to bottom, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+        #0d5eaf;
+      border-bottom-right-radius:4px;
+    }
+    .lang-flag--uk{
+      background:
+        linear-gradient(to right, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%),
+        linear-gradient(to bottom, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%),
+        linear-gradient(to right, transparent 0 31%, #ffffff 31% 69%, transparent 69% 100%),
+        linear-gradient(to bottom, transparent 0 31%, #ffffff 31% 69%, transparent 69% 100%),
+        linear-gradient(33deg, transparent 43%, #c8102e 43% 47%, transparent 47% 53%, #c8102e 53% 57%, transparent 57%),
+        linear-gradient(-33deg, transparent 43%, #c8102e 43% 47%, transparent 47% 53%, #c8102e 53% 57%, transparent 57%),
+        linear-gradient(33deg, transparent 38%, #ffffff 38% 47%, transparent 47% 53%, #ffffff 53% 62%, transparent 62%),
+        linear-gradient(-33deg, transparent 38%, #ffffff 38% 47%, transparent 47% 53%, #ffffff 53% 62%, transparent 62%),
+        #012169;
+    }
+
+    .menu-btn{
+      pointer-events:auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:92px;
+      padding:10px 16px;
+      border:none;
+      border-radius:999px;
+      background:transparent;
+      color:var(--fg);
+      font:500 12px/1 var(--mono);
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      cursor:pointer;
+      user-select:none;
+      box-shadow:none;
+      appearance:none;
+      -webkit-appearance:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .menu-btn:focus,
+    .menu-btn:focus-visible{
+      outline:none;
+      box-shadow:none;
+    }
+    .burger{
+      width:38px;
+      height:14px;
+      position:relative;
+      display:inline-block;
+    }
+    .burger span{
+      position:absolute;
+      left:0;
+      right:0;
+      top:50%;
+      height:1px;
+      background:#000;
+      transform-origin:center;
+      transition:transform .25s ease;
+    }
+    .burger span:nth-child(1){transform:translateY(-4px)}
+    .burger span:nth-child(2){transform:translateY(4px)}
+    .menu-btn[aria-expanded="true"] .burger span:nth-child(1){transform:translateY(0) rotate(45deg)}
+    .menu-btn[aria-expanded="true"] .burger span:nth-child(2){transform:translateY(0) rotate(-45deg)}
+
+    .page-shell{
+      position:relative;
+      z-index:5;
+      width:min(920px, calc(100% - (var(--pad) * 2)));
+      margin:0 auto;
+      padding:clamp(112px, 16vh, 156px) 0 84px;
+    }
+    .page-kicker{
+      margin:0 0 20px;
+      color:rgba(45,29,26,.66);
+      font:500 12px/1 var(--mono);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+    .page-title{
+      margin:0;
+      color:#000;
+      font-family:var(--brand-font);
+      font-weight:500;
+      letter-spacing:.16em;
+      line-height:1.08;
+      text-transform:uppercase;
+      font-size:clamp(30px, 5.5vw, 56px);
+    }
+    .page-copy{
+      margin-top:28px;
+      max-width:720px;
+      display:grid;
+      gap:18px;
+    }
+    .lead{
+      margin:0;
+      color:#1f1712;
+      font-size:clamp(18px, 2vw, 22px);
+      line-height:1.72;
+      letter-spacing:.03em;
+    }
+    .entries{
+      margin-top:18px;
+      padding-top:22px;
+      border-top:1px solid var(--line);
+      display:grid;
+      gap:12px;
+    }
+    .entries-label{
+      margin:0;
+      color:#000;
+      font:500 13px/1.2 var(--brand-font);
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+    .entry-list{
+      display:grid;
+      gap:0;
+    }
+    .entry-item{
+      display:grid;
+      gap:12px;
+      padding:20px 0;
+      border-top:1px solid var(--line);
+    }
+    .entry-meta{
+      margin:0;
+      color:rgba(45,29,26,.58);
+      font:500 12px/1 var(--mono);
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+    .entry-link{
+      display:block;
+      color:#000;
+      font-family:var(--brand-font);
+      font-size:clamp(18px, 2.2vw, 24px);
+      line-height:1.45;
       letter-spacing:.04em;
+      text-transform:none;
+      max-width:34ch;
+    }
+    .entry-link:hover{
+      opacity:1;
+      text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:4px;
+    }
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:50;
+      background:var(--bg);
+      color:#1f1712;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      isolation:isolate;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease;
+    }
+    .overlay::before{
+      content:"";
+      position:absolute;
+      inset:-8% 0 0;
+      background:url("yarn.png") center/cover no-repeat;
+      opacity:.18;
+      filter:contrast(1.02) saturate(.96);
+      pointer-events:none;
+    }
+    .overlay::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        to bottom,
+        rgba(241,216,214,.06) 0%,
+        rgba(247,236,234,.24) 100%
+      );
+      pointer-events:none;
+    }
+    .overlay[data-open="true"]{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .overlay-inner{
+      position:relative;
+      z-index:1;
+      width:min(900px, 92vw);
+      padding:calc(var(--pad) * 1.5);
+      display:grid;
+      gap:22px;
+    }
+    .overlay-nav{
+      display:grid;
+      gap:14px;
+      text-align:center;
+    }
+    .overlay-nav a{
+      font-size:clamp(22px, 4vw, 44px);
+      font-weight:400;
+      font-family:var(--brand-font);
+      color:#000;
+      letter-spacing:.06em;
+      padding:10px 0;
+    }
+    .overlay-nav a:focus,
+    .overlay-nav a:focus-visible{
+      outline:none;
+      box-shadow:none;
+    }
+    .overlay-meta{
+      margin-top:10px;
+      border-top:1px solid rgba(74,52,38,.28);
+      padding-top:18px;
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      color:rgba(74,52,38,.82);
+      font:500 12px/1.4 var(--mono);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .overlay,
+      .burger span{transition:none}
+    }
+
+    @media (max-width:640px){
+      .topbar-actions{gap:8px}
+      .lang-switch{gap:6px}
+      .lang-btn{width:32px;height:32px}
+      .menu-btn{padding:10px}
+      .page-shell{padding-top:120px}
     }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="top">
-      <a href="index.html" aria-label="Επιστροφή στην αρχική">← Αρχική</a>
-      <a href="profile.html">Προφίλ</a>
-    </header>
+  <header class="topbar" id="topbar" aria-label="Κύρια πλοήγηση">
+    <a class="brand" href="index.html" id="homeLink" aria-label="Αρχική">Psychologimata</a>
 
-    <h1>Blog</h1>
+    <div class="topbar-actions">
+      <div class="lang-switch" data-lang-switcher aria-label="Επιλογή γλώσσας">
+        <button class="lang-btn is-active" id="langElBtn" type="button" data-lang="el" aria-pressed="true" aria-label="Ελληνικά" title="Ελληνικά">
+          <span class="lang-flag lang-flag--greece" aria-hidden="true"></span>
+        </button>
+        <button class="lang-btn" id="langEnBtn" type="button" data-lang="en" aria-pressed="false" aria-label="Αγγλικά UK" title="Αγγλικά UK">
+          <span class="lang-flag lang-flag--uk" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <button class="menu-btn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false" aria-label="Άνοιγμα μενού" title="Άνοιγμα μενού">
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <p class="page-kicker" id="pageKicker">Ιστολόγιο</p>
+    <h1 class="page-title" id="pageTitle">Ιστολόγιο - ενημερωτικό δελτίο</h1>
+
+    <div class="page-copy">
+      <p class="lead" id="leadText">Σκέψεις, άρθρα και μικρά κείμενα για την ψυχοθεραπεία, την καθημερινή ζωή και όσα μας απασχολούν εσωτερικά.</p>
+      <section class="entries" aria-labelledby="entriesLabel">
+        <p class="entries-label" id="entriesLabel">Entries</p>
+        <div class="entry-list">
+          <article class="entry-item">
+            <p class="entry-meta">PubMed</p>
+          <a
+            class="entry-link"
+            href="https://pubmed.ncbi.nlm.nih.gov/30135789/"
+            target="_blank"
+            rel="noreferrer"
+          >Customized CBT via internet for adolescents with pain and emotional distress: A pilot study</a>
+          </article>
+        </div>
+      </section>
+    </div>
   </main>
+
+  <div class="overlay" id="menu" role="dialog" aria-modal="true" aria-label="Μενού" data-open="false">
+    <div class="overlay-inner">
+      <nav class="overlay-nav" id="overlayNav" aria-label="Σύνδεσμοι μενού">
+        <a href="profile.html" id="profileNavLink">Προφίλ</a>
+        <a href="blog.html" id="blogNavLink">Ιστολόγιο - ενημερωτικό δελτίο</a>
+      </nav>
+
+      <div class="overlay-meta">
+        <span id="overlayAppointment">Κατόπιν ραντεβού</span>
+        <span><a href="mailto:psychologimata@outlook.com" id="overlayEmailLink" data-close>psychologimata@outlook.com</a></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="lang.js"></script>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('menu');
+    const closeLinks = overlay.querySelectorAll('[data-close]');
+    const homeLink = document.getElementById('homeLink');
+    const pageKicker = document.getElementById('pageKicker');
+    const pageTitle = document.getElementById('pageTitle');
+    const leadText = document.getElementById('leadText');
+    const entriesLabel = document.getElementById('entriesLabel');
+    const overlayNav = document.getElementById('overlayNav');
+    const profileNavLink = document.getElementById('profileNavLink');
+    const blogNavLink = document.getElementById('blogNavLink');
+    const overlayAppointment = document.getElementById('overlayAppointment');
+    const overlayEmailLink = document.getElementById('overlayEmailLink');
+    const langElBtn = document.getElementById('langElBtn');
+    const langEnBtn = document.getElementById('langEnBtn');
+
+    const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    let lastFocused = null;
+    let currentLanguage = 'el';
+
+    const translations = {
+      el: {
+        title:'Blog | Psychologimata',
+        topNavigation:'Κύρια πλοήγηση',
+        home:'Αρχική',
+        languageSwitcher:'Επιλογή γλώσσας',
+        languageGreek:'Ελληνικά',
+        languageEnglish:'Αγγλικά UK',
+        menu:'Μενού',
+        menuLinks:'Σύνδεσμοι μενού',
+        menuOpen:'Άνοιγμα μενού',
+        menuClose:'Κλείσιμο μενού',
+        pageKicker:'Ιστολόγιο',
+        pageTitle:'Ιστολόγιο - ενημερωτικό δελτίο',
+        lead:'Σκέψεις, άρθρα και μικρά κείμενα για την ψυχοθεραπεία, την καθημερινή ζωή και όσα μας απασχολούν εσωτερικά.',
+        entries:'Καταχωρήσεις',
+        profile:'Προφίλ',
+        blog:'Ιστολόγιο - ενημερωτικό δελτίο',
+        appointmentOnly:'Κατόπιν ραντεβού',
+        email:'psychologimata@outlook.com'
+      },
+      en: {
+        title:'Blog | Psychologimata',
+        topNavigation:'Main navigation',
+        home:'Home',
+        languageSwitcher:'Language selection',
+        languageGreek:'Greek',
+        languageEnglish:'UK English',
+        menu:'Menu',
+        menuLinks:'Menu links',
+        menuOpen:'Open menu',
+        menuClose:'Close menu',
+        pageKicker:'Blog',
+        pageTitle:'Blog - newsletter',
+        lead:'Thoughts, articles, and short reflections on psychotherapy, everyday life, and the inner questions that occupy us.',
+        entries:'Entries',
+        profile:'Profile',
+        blog:'Blog - newsletter',
+        appointmentOnly:'By appointment only',
+        email:'psychologimata@outlook.com'
+      }
+    };
+
+    function getCopy(){
+      return translations[currentLanguage] || translations.el;
+    }
+
+    function updateMenuButtonLabel(){
+      const copy = getCopy();
+      const label = overlay.dataset.open === 'true' ? copy.menuClose : copy.menuOpen;
+      menuBtn.setAttribute('aria-label', label);
+      menuBtn.setAttribute('title', label);
+    }
+
+    function applyLanguage(language){
+      currentLanguage = language;
+      const copy = getCopy();
+
+      document.title = copy.title;
+      document.getElementById('topbar')?.setAttribute('aria-label', copy.topNavigation);
+      homeLink.setAttribute('aria-label', copy.home);
+      pageKicker.textContent = copy.pageKicker;
+      pageTitle.textContent = copy.pageTitle;
+      leadText.textContent = copy.lead;
+      entriesLabel.textContent = copy.entries;
+      overlay.setAttribute('aria-label', copy.menu);
+      overlayNav.setAttribute('aria-label', copy.menuLinks);
+      profileNavLink.textContent = copy.profile;
+      blogNavLink.textContent = copy.blog;
+      overlayAppointment.textContent = copy.appointmentOnly;
+      overlayEmailLink.textContent = copy.email;
+      document.querySelector('[data-lang-switcher]')?.setAttribute('aria-label', copy.languageSwitcher);
+      langElBtn.setAttribute('aria-label', copy.languageGreek);
+      langElBtn.setAttribute('title', copy.languageGreek);
+      langEnBtn.setAttribute('aria-label', copy.languageEnglish);
+      langEnBtn.setAttribute('title', copy.languageEnglish);
+      updateMenuButtonLabel();
+    }
+
+    function openMenu(){
+      lastFocused = document.activeElement;
+      overlay.dataset.open = 'true';
+      menuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      updateMenuButtonLabel();
+      overlay.querySelector(focusableSelector)?.focus();
+    }
+
+    function closeMenu(){
+      overlay.dataset.open = 'false';
+      menuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      updateMenuButtonLabel();
+      lastFocused?.focus();
+    }
+
+    function launchMailDraft(){
+      const mailtoUrl = 'mailto:psychologimata@outlook.com';
+
+      try{
+        if(window.top && window.top !== window){
+          window.top.location.href = mailtoUrl;
+          return;
+        }
+      } catch (error){
+        // Ignore cross-context access issues and fall back to the current window.
+      }
+
+      window.location.href = mailtoUrl;
+    }
+
+    function openMailDraft(event){
+      event.preventDefault();
+      event.stopPropagation();
+      launchMailDraft();
+      closeMenu();
+    }
+
+    function toggleMenu(){
+      overlay.dataset.open === 'true' ? closeMenu() : openMenu();
+    }
+
+    menuBtn.addEventListener('click', toggleMenu);
+
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) closeMenu();
+    });
+
+    closeLinks.forEach((link) => {
+      if(link === overlayEmailLink){
+        link.addEventListener('click', openMailDraft);
+        return;
+      }
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && overlay.dataset.open === 'true') closeMenu();
+    });
+
+    overlay.addEventListener('keydown', (e) => {
+      if(overlay.dataset.open !== 'true' || e.key !== 'Tab') return;
+
+      const focusables = Array.from(overlay.querySelectorAll(focusableSelector))
+        .filter((element) => !element.hasAttribute('disabled') && element.offsetParent !== null);
+
+      if(!focusables.length) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if(e.shiftKey && document.activeElement === first){
+        e.preventDefault();
+        last.focus();
+      } else if(!e.shiftKey && document.activeElement === last){
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    window.SiteLanguage.createLanguageController(applyLanguage);
+  </script>
 </body>
 </html>

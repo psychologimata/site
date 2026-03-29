@@ -1,22 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f1d8d6" />
   <title>Psychologimata</title>
-  <meta name="description" content="Minimal landing page with fullscreen menu and scrolling image." />
+  <meta name="description" content="Ιστοσελίδα ψυχολογικών υπηρεσιών με πληροφορίες για τις παρεχόμενες υπηρεσίες και φόρμα επικοινωνίας." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root{
-      --bg:#dba679;
-      --bg-light:#f2f2f7;
-      --fg:#f2f2f2;
-      --muted:rgba(242,242,242,.72);
-      --muted2:rgba(242,242,242,.5);
-      --line:rgba(242,242,242,.18);
+      --bg:#f1d8d6;
+      --bg-light:#f7ecea;
+      --fg:#2d1d1a;
+      --muted:rgba(45,29,26,.72);
+      --muted2:rgba(45,29,26,.5);
+      --line:rgba(45,29,26,.14);
       --pad:clamp(16px, 2.2vw, 28px);
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       --brand-font: "Cinzel", serif;
@@ -28,15 +29,15 @@
       margin:0;
       padding:0;
       min-height:100%;
+      background:var(--bg);
     }
     html{
-      background:linear-gradient(to bottom, rgb(219, 166, 121) 0%, rgb(242, 242, 247) 100%);
-      background-repeat:no-repeat;
-      background-size:100% 100%;
+      overscroll-behavior-y:none;
     }
     body{
       min-height:100vh;
-      background:transparent;
+      min-height:100dvh;
+      background:var(--bg);
       color:var(--fg);
       font-family:var(--font);
       letter-spacing:.02em;
@@ -69,6 +70,90 @@
       display:block;
       width:clamp(100px, 14vw, 160px);
       height:auto;
+    }
+    .topbar-actions{
+      pointer-events:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .lang-switch{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .lang-btn{
+      display:grid;
+      place-items:center;
+      width:34px;
+      height:34px;
+      padding:0;
+      border:1px solid rgba(45,29,26,.2);
+      border-radius:999px;
+      background:rgba(247,236,234,.72);
+      color:#2d1d1a;
+      cursor:pointer;
+      box-shadow:none;
+      appearance:none;
+      -webkit-appearance:none;
+      transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease, background .2s ease;
+    }
+    .lang-btn:hover{
+      border-color:rgba(45,29,26,.45);
+      transform:translateY(-1px);
+    }
+    .lang-btn:focus,
+    .lang-btn:focus-visible{
+      outline:none;
+      border-color:#2d1d1a;
+      box-shadow:0 0 0 3px rgba(45,29,26,.12);
+    }
+    .lang-btn.is-active,
+    .lang-btn[aria-pressed="true"]{
+      border:2px solid #2d1d1a;
+      background:rgba(255,255,255,.92);
+      box-shadow:0 0 0 3px rgba(45,29,26,.1);
+    }
+    .lang-flag{
+      position:relative;
+      display:block;
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      overflow:hidden;
+      box-shadow:inset 0 0 0 1px rgba(45,29,26,.12);
+    }
+    .lang-flag--greece{
+      background:repeating-linear-gradient(
+        to bottom,
+        #0d5eaf 0 2px,
+        #ffffff 2px 4px
+      );
+    }
+    .lang-flag--greece::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      width:9px;
+      height:9px;
+      background:
+        linear-gradient(to right, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+        linear-gradient(to bottom, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+        #0d5eaf;
+      border-bottom-right-radius:4px;
+    }
+    .lang-flag--uk{
+      background:
+        linear-gradient(to right, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%),
+        linear-gradient(to bottom, transparent 0 41%, #c8102e 41% 59%, transparent 59% 100%),
+        linear-gradient(to right, transparent 0 31%, #ffffff 31% 69%, transparent 69% 100%),
+        linear-gradient(to bottom, transparent 0 31%, #ffffff 31% 69%, transparent 69% 100%),
+        linear-gradient(33deg, transparent 43%, #c8102e 43% 47%, transparent 47% 53%, #c8102e 53% 57%, transparent 57%),
+        linear-gradient(-33deg, transparent 43%, #c8102e 43% 47%, transparent 47% 53%, #c8102e 53% 57%, transparent 57%),
+        linear-gradient(33deg, transparent 38%, #ffffff 38% 47%, transparent 47% 53%, #ffffff 53% 62%, transparent 62%),
+        linear-gradient(-33deg, transparent 38%, #ffffff 38% 47%, transparent 47% 53%, #ffffff 53% 62%, transparent 62%),
+        #012169;
     }
 
     .menu-btn{
@@ -122,6 +207,7 @@
       height:92vh;
       width:100vw;
       overflow:hidden;
+      background:var(--bg);
     }
 
     /* Scrolling image panel */
@@ -132,7 +218,8 @@
       isolation:isolate;
       z-index:1;
       pointer-events:none;
-      background:#fff;
+      background:var(--bg);
+      opacity:1;
     }
 
     /*
@@ -146,7 +233,7 @@
       will-change:transform;
       transform:translate3d(0,-70px,0);
       transition:none;
-      opacity:.36;
+      opacity:.56;
     }
 
     .image-track img{
@@ -154,14 +241,19 @@
       height:100%;
       object-fit:cover;
       display:block;
-      filter:contrast(1.02) saturate(.98);
+      filter:contrast(1.18) saturate(1.1) brightness(.88);
     }
 
     /* Dark veil for readability */
     .veil{
       position:absolute;
       inset:0;
-      background:none;
+      background:linear-gradient(
+        to bottom,
+        rgba(241,216,214,.08) 0%,
+        rgba(241,216,214,.18) 48%,
+        rgba(241,216,214,.52) 100%
+      );
       z-index:2;
       pointer-events:none;
     }
@@ -204,7 +296,7 @@
       position:relative;
       z-index:5;
       padding:clamp(40px, 7vw, 88px) var(--pad);
-      background:none;
+      background:var(--bg);
       color:#4a3426;
     }
     .contact-bridge{
@@ -370,7 +462,7 @@
       position:fixed;
       inset:0;
       z-index:50;
-      background:linear-gradient(to bottom, rgb(219, 166, 121) 0%, rgb(242, 242, 247) 100%);
+      background:var(--bg);
       color:#1f1712;
       backdrop-filter:none;
       display:grid;
@@ -396,8 +488,8 @@
       inset:0;
       background:linear-gradient(
         to bottom,
-        rgba(219,166,121,.08) 0%,
-        rgba(242,242,247,.06) 100%
+        rgba(241,216,214,.06) 0%,
+        rgba(247,236,234,.24) 100%
       );
       pointer-events:none;
     }
@@ -459,6 +551,9 @@
 
     /* Small screens */
     @media (max-width:520px){
+      .topbar-actions{gap:8px}
+      .lang-switch{gap:6px}
+      .lang-btn{width:32px;height:32px}
       .menu-btn{padding:10px}
       .copy{transform:translateY(-4vh)}
       .contact{padding-top:32px}
@@ -471,18 +566,29 @@
 </head>
 
 <body>
-  <header class="topbar" aria-label="Top navigation">
-    <a class="brand" href="#" aria-label="Home">
+  <header class="topbar" id="topbar" aria-label="Κύρια πλοήγηση">
+    <a class="brand" href="index.html" id="homeLink" aria-label="Αρχική">
       <!-- <img src="logo.png" alt="Psychologimata logo" /> -->
     </a>
 
-    <button class="menu-btn" id="menuBtn" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false">
-      <span class="burger" aria-hidden="true"><span></span><span></span></span>
-    </button>
+    <div class="topbar-actions">
+      <div class="lang-switch" data-lang-switcher aria-label="Επιλογή γλώσσας">
+        <button class="lang-btn is-active" id="langElBtn" type="button" data-lang="el" aria-pressed="true" aria-label="Ελληνικά" title="Ελληνικά">
+          <span class="lang-flag lang-flag--greece" aria-hidden="true"></span>
+        </button>
+        <button class="lang-btn" id="langEnBtn" type="button" data-lang="en" aria-pressed="false" aria-label="Αγγλικά UK" title="Αγγλικά UK">
+          <span class="lang-flag lang-flag--uk" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <button class="menu-btn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false" aria-label="Άνοιγμα μενού" title="Άνοιγμα μενού">
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
   </header>
 
   <main class="stage">
-    <section class="image-window" aria-label="Hero image">
+    <section class="image-window" id="heroImageSection" aria-label="Κεντρική εικόνα">
       <div class="image-track" id="imageTrack">
         <!-- Replace with your own image. This one is a safe placeholder. -->
         <img
@@ -495,10 +601,10 @@
       <div class="veil" aria-hidden="true"></div>
     </section>
 
-    <section class="copy" aria-label="Intro">
+    <section class="copy" id="introSection" aria-label="Εισαγωγή">
       <div class="copy-inner">
         <h1 class="title">Psychologimata</h1>
-        <p class="desc">
+        <p class="desc" id="heroDesc">
              ΥΠΗΡΕΣΙΕΣ <br>
 Ψυχολογική αξιολόγηση <br>
 Ατομική ψυχοθεραπεία & συμβουλευτική <br>
@@ -508,35 +614,35 @@
     </section>
   </main>
 
-  <section class="contact" id="contact" aria-label="Contact form">
+  <section class="contact" id="contact" aria-label="Φόρμα επικοινωνίας">
     <div class="contact-wrap">
       <div class="contact-left">
-        <h2>Επικοινωνία</h2>
-        <p class="contact-note">Κατόπιν ραντεβού</p>
+        <h2 id="contactTitle">Επικοινωνία</h2>
+        <p class="contact-note" id="contactNote">Κατόπιν ραντεβού</p>
       </div>
 
       <div class="contact-right">
         <form class="contact-form" action="/api/contact" method="post" novalidate autocapitalize="none" data-api-url="https://psychologimata-enadcnckc8gdcraz.swedencentral-01.azurewebsites.net/api/contact">
           <div class="form-grid">
             <div class="field">
-              <label for="name">Όνομα</label>
+              <label for="name" id="nameLabel">Όνομα</label>
               <input id="name" name="name" type="text" autocomplete="name" required />
             </div>
             <div class="field">
-              <label for="email">Email</label>
+              <label for="email" id="emailLabel">Email</label>
               <input id="email" name="email" type="email" autocomplete="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" />
             </div>
             <div class="field">
-              <label for="phone">Τηλέφωνο</label>
+              <label for="phone" id="phoneLabel">Τηλέφωνο</label>
               <input id="phone" name="phone" type="tel" autocomplete="tel" required />
             </div>
             <div class="field">
-              <label for="subject">Θέμα</label>
+              <label for="subject" id="subjectLabel">Θέμα</label>
               <input id="subject" name="subject" type="text" required />
             </div>
           </div>
           <div class="field">
-            <label for="message">Μήνυμα</label>
+            <label for="message" id="messageLabel">Μήνυμα</label>
             <textarea id="message" name="message" required></textarea>
           </div>
           <button class="form-submit" type="submit">Αποστολή</button>
@@ -544,46 +650,201 @@
         </form>
       </div>
     </div>
-    <div class="contact-bridge" aria-label="Social links">
+    <div class="contact-bridge" id="socialLinksSection" aria-label="Κοινωνικοί σύνδεσμοι">
       <div class="contact-links">
-        <a class="social-icon" href="https://instagram.com/psychologimata" target="_blank" rel="noreferrer" aria-label="Instagram">
+        <a class="social-icon" href="https://instagram.com/psychologimata" target="_blank" rel="noreferrer" id="instagramLink" aria-label="Instagram">
           <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="currentColor">
             <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5a4.25 4.25 0 0 0-4.25-4.25h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm5.25-2.13a1.13 1.13 0 1 1 0 2.26 1.13 1.13 0 0 1 0-2.26z"/>
           </svg>
         </a>
-        <a class="email-link" href="mailto:psychologimata@outlook.com">psychologimata@outlook.com</a>
+        <a class="email-link" href="mailto:psychologimata@outlook.com" id="contactEmailLink">psychologimata@outlook.com</a>
       </div>
     </div>
   </section>
 
   <!-- Fullscreen Menu -->
-  <div class="overlay" id="menu" role="dialog" aria-modal="true" aria-label="Menu" data-open="false">
+  <div class="overlay" id="menu" role="dialog" aria-modal="true" aria-label="Μενού" data-open="false">
     <div class="overlay-inner">
-      <nav class="overlay-nav" aria-label="Σύνδεσμοι μενού">
-        <a href="profile.html">Προφίλ</a>
-        <a href="blog.html">Blog - newsletter</a>
+      <nav class="overlay-nav" id="overlayNav" aria-label="Σύνδεσμοι μενού">
+        <a href="profile.html" id="profileNavLink">Προφίλ</a>
+        <a href="blog.html" id="blogNavLink">Blog - ενημερωτικό δελτίο</a>
       </nav>
 
       <div class="overlay-meta">
-        <span>By appointment only</span>
-        <span><a href="mailto:psychologimata@outlook.com" data-close>Email</a></span>
+        <span id="overlayAppointment">Κατόπιν ραντεβού</span>
+        <span><a href="mailto:psychologimata@outlook.com" id="overlayEmailLink" data-close>psychologimata@outlook.com</a></span>
       </div>
     </div>
   </div>
 
+  <script src="lang.js"></script>
   <script>
     const menuBtn = document.getElementById('menuBtn');
     const overlay = document.getElementById('menu');
     const closeLinks = overlay.querySelectorAll('[data-close]');
+    const topbar = document.getElementById('topbar');
+    const homeLink = document.getElementById('homeLink');
+    const heroImageSection = document.getElementById('heroImageSection');
+    const introSection = document.getElementById('introSection');
+    const heroDesc = document.getElementById('heroDesc');
+    const contactTitle = document.getElementById('contactTitle');
+    const contactNote = document.getElementById('contactNote');
+    const socialLinksSection = document.getElementById('socialLinksSection');
+    const instagramLink = document.getElementById('instagramLink');
+    const overlayNav = document.getElementById('overlayNav');
+    const profileNavLink = document.getElementById('profileNavLink');
+    const blogNavLink = document.getElementById('blogNavLink');
+    const overlayAppointment = document.getElementById('overlayAppointment');
+    const overlayEmailLink = document.getElementById('overlayEmailLink');
+    const contactEmailLink = document.getElementById('contactEmailLink');
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const nameLabel = document.getElementById('nameLabel');
+    const emailLabel = document.getElementById('emailLabel');
+    const phoneLabel = document.getElementById('phoneLabel');
+    const subjectLabel = document.getElementById('subjectLabel');
+    const messageLabel = document.getElementById('messageLabel');
+    const langElBtn = document.getElementById('langElBtn');
+    const langEnBtn = document.getElementById('langEnBtn');
 
     // Basic focus trap
     const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
     let lastFocused = null;
+    let currentLanguage = 'el';
+
+    const translations = {
+      el: {
+        title:'Psychologimata',
+        description:'Ιστοσελίδα ψυχολογικών υπηρεσιών με πληροφορίες για τις παρεχόμενες υπηρεσίες και φόρμα επικοινωνίας.',
+        topNavigation:'Κύρια πλοήγηση',
+        home:'Αρχική',
+        languageSwitcher:'Επιλογή γλώσσας',
+        languageGreek:'Ελληνικά',
+        languageEnglish:'Αγγλικά UK',
+        menuOpen:'Άνοιγμα μενού',
+        menuClose:'Κλείσιμο μενού',
+        heroImage:'Κεντρική εικόνα',
+        intro:'Εισαγωγή',
+        servicesHtml:'ΥΠΗΡΕΣΙΕΣ <br>Ψυχολογική αξιολόγηση <br>Ατομική ψυχοθεραπεία &amp; συμβουλευτική <br>Συμβουλευτική γονέων',
+        contactForm:'Φόρμα επικοινωνίας',
+        contact:'Επικοινωνία',
+        appointmentOnly:'Κατόπιν ραντεβού',
+        socialLinks:'Κοινωνικοί σύνδεσμοι',
+        instagram:'Instagram',
+        menu:'Μενού',
+        menuLinks:'Σύνδεσμοι μενού',
+        profile:'Προφίλ',
+        blog:'Blog - ενημερωτικό δελτίο',
+        email:'psychologimata@outlook.com',
+        name:'Όνομα',
+        phone:'Τηλέφωνο',
+        subject:'Θέμα',
+        message:'Μήνυμα',
+        submit:'Αποστολή',
+        submitting:'Αποστολή...',
+        sending:'Αποστολή μηνύματος...',
+        success:'Το μήνυμά σας στάλθηκε επιτυχώς.',
+        error:'Παρουσιάστηκε σφάλμα κατά την αποστολή. Παρακαλώ δοκιμάστε ξανά.',
+        invalidEmail:'Παρακαλώ εισάγετε έγκυρη διεύθυνση email (π.χ. name@example.com).',
+        thisField:'αυτό το πεδίο'
+      },
+      en: {
+        title:'Psychologimata',
+        description:'Psychology services website with service information and a contact form.',
+        topNavigation:'Main navigation',
+        home:'Home',
+        languageSwitcher:'Language selection',
+        languageGreek:'Greek',
+        languageEnglish:'UK English',
+        menuOpen:'Open menu',
+        menuClose:'Close menu',
+        heroImage:'Hero image',
+        intro:'Introduction',
+        servicesHtml:'SERVICES <br>Psychological assessment <br>Individual psychotherapy &amp; counselling <br>Parental counselling',
+        contactForm:'Contact form',
+        contact:'Contact',
+        appointmentOnly:'By appointment only',
+        socialLinks:'Social links',
+        instagram:'Instagram',
+        menu:'Menu',
+        menuLinks:'Menu links',
+        profile:'Profile',
+        blog:'Blog - newsletter',
+        email:'psychologimata@outlook.com',
+        name:'Name',
+        phone:'Phone',
+        subject:'Subject',
+        message:'Message',
+        submit:'Send',
+        submitting:'Sending...',
+        sending:'Sending message...',
+        success:'Your message was sent successfully.',
+        error:'There was an error sending your message. Please try again.',
+        invalidEmail:'Please enter a valid email address (for example, name@example.com).',
+        thisField:'this field'
+      }
+    };
+
+    function getCopy(){
+      return translations[currentLanguage] || translations.el;
+    }
+
+    function updateMenuButtonLabel(){
+      const copy = getCopy();
+      const label = overlay.dataset.open === 'true' ? copy.menuClose : copy.menuOpen;
+      menuBtn.setAttribute('aria-label', label);
+      menuBtn.setAttribute('title', label);
+    }
+
+    function applyLanguage(language){
+      currentLanguage = language;
+      const copy = getCopy();
+
+      document.title = copy.title;
+      metaDescription?.setAttribute('content', copy.description);
+      topbar?.setAttribute('aria-label', copy.topNavigation);
+      homeLink?.setAttribute('aria-label', copy.home);
+      heroImageSection?.setAttribute('aria-label', copy.heroImage);
+      introSection?.setAttribute('aria-label', copy.intro);
+      heroDesc.innerHTML = copy.servicesHtml;
+      document.getElementById('contact')?.setAttribute('aria-label', copy.contactForm);
+      contactTitle.textContent = copy.contact;
+      contactNote.textContent = copy.appointmentOnly;
+      socialLinksSection?.setAttribute('aria-label', copy.socialLinks);
+      instagramLink?.setAttribute('aria-label', copy.instagram);
+      overlay?.setAttribute('aria-label', copy.menu);
+      overlayNav?.setAttribute('aria-label', copy.menuLinks);
+      profileNavLink.textContent = copy.profile;
+      blogNavLink.textContent = copy.blog;
+      overlayAppointment.textContent = copy.appointmentOnly;
+      overlayEmailLink.textContent = copy.email;
+      nameLabel.textContent = copy.name;
+      emailLabel.textContent = copy.email;
+      phoneLabel.textContent = copy.phone;
+      subjectLabel.textContent = copy.subject;
+      messageLabel.textContent = copy.message;
+      langElBtn.setAttribute('aria-label', copy.languageGreek);
+      langElBtn.setAttribute('title', copy.languageGreek);
+      langEnBtn.setAttribute('aria-label', copy.languageEnglish);
+      langEnBtn.setAttribute('title', copy.languageEnglish);
+      document.querySelector('[data-lang-switcher]')?.setAttribute('aria-label', copy.languageSwitcher);
+
+      submitButtonText = copy.submit;
+      if(submitButton){
+        submitButton.textContent = submitButton.disabled ? copy.submitting : submitButtonText;
+      }
+
+      if(formStatus?.dataset.messageKey){
+        setFormStatus(formStatus.dataset.state || '', copy[formStatus.dataset.messageKey] || formStatus.textContent, formStatus.dataset.messageKey);
+      }
+
+      updateMenuButtonLabel();
+    }
 
     function openMenu(){
       lastFocused = document.activeElement;
       overlay.dataset.open = 'true';
       menuBtn.setAttribute('aria-expanded', 'true');
+      updateMenuButtonLabel();
       document.body.style.overflow = 'hidden';
       edgeOffset = 0;
       edgeVelocity = 0;
@@ -597,9 +858,32 @@
     function closeMenu(){
       overlay.dataset.open = 'false';
       menuBtn.setAttribute('aria-expanded', 'false');
+      updateMenuButtonLabel();
       document.body.style.overflow = '';
       startMomentum();
       lastFocused?.focus();
+    }
+
+    function launchMailDraft(){
+      const mailtoUrl = 'mailto:psychologimata@outlook.com';
+
+      try{
+        if(window.top && window.top !== window){
+          window.top.location.href = mailtoUrl;
+          return;
+        }
+      } catch (error){
+        // Ignore cross-context access issues and fall back to the current window.
+      }
+
+      window.location.href = mailtoUrl;
+    }
+
+    function openMailDraft(event){
+      event.preventDefault();
+      event.stopPropagation();
+      launchMailDraft();
+      closeMenu();
     }
 
     function toggleMenu(){
@@ -615,7 +899,18 @@
     });
 
     // Close on link click
-    closeLinks.forEach(a => a.addEventListener('click', () => closeMenu()));
+    closeLinks.forEach((link) => {
+      if(link === overlayEmailLink){
+        link.addEventListener('click', openMailDraft);
+        return;
+      }
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    contactEmailLink?.addEventListener('click', (event) => {
+      event.preventDefault();
+      launchMailDraft();
+    });
 
     // Escape closes
     window.addEventListener('keydown', (e) => {
@@ -647,23 +942,28 @@
     const contactForm = document.querySelector('.contact-form');
     const formStatus = document.getElementById('formStatus');
     const submitButton = contactForm?.querySelector('.form-submit');
-    const submitButtonText = submitButton?.textContent || 'Αποστολή';
+    let submitButtonText = submitButton?.textContent || 'Αποστολή';
 
     function fieldLabel(field){
       const label = document.querySelector(`label[for="${field.id}"]`);
-      return label ? label.textContent.trim() : 'αυτό το πεδίο';
+      return label ? label.textContent.trim() : getCopy().thisField;
     }
 
-    function setGreekValidation(field){
+    function setFieldValidation(field){
+      const copy = getCopy();
       field.setCustomValidity('');
 
       if(field.validity.valueMissing){
-        field.setCustomValidity(`Παρακαλώ συμπληρώστε το πεδίο «${fieldLabel(field)}».`);
+        if(currentLanguage === 'en'){
+          field.setCustomValidity(`Please complete the "${fieldLabel(field)}" field.`);
+        } else {
+          field.setCustomValidity(`Παρακαλώ συμπληρώστε το πεδίο «${fieldLabel(field)}».`);
+        }
         return;
       }
 
       if(field.type === 'email' && (field.validity.typeMismatch || field.validity.patternMismatch)){
-        field.setCustomValidity('Παρακαλώ εισάγετε έγκυρη διεύθυνση email (π.χ. name@example.com).');
+        field.setCustomValidity(copy.invalidEmail);
       }
     }
 
@@ -683,23 +983,24 @@
       return '/api/contact';
     }
 
-    function setFormStatus(state, message){
+    function setFormStatus(state, message, messageKey = ''){
       if(!formStatus) return;
       formStatus.dataset.state = state;
+      formStatus.dataset.messageKey = messageKey;
       formStatus.textContent = message;
     }
 
     function setSubmittingState(isSubmitting){
       if(!submitButton) return;
       submitButton.disabled = isSubmitting;
-      submitButton.textContent = isSubmitting ? 'Αποστολή...' : submitButtonText;
+      submitButton.textContent = isSubmitting ? getCopy().submitting : submitButtonText;
     }
 
     if(contactForm){
       contactForm.addEventListener('invalid', (e) => {
         const field = e.target;
         if(!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
-        setGreekValidation(field);
+        setFieldValidation(field);
       }, true);
 
       contactForm.addEventListener('input', (e) => {
@@ -715,7 +1016,7 @@
         e.preventDefault();
 
         const fields = contactForm.querySelectorAll('input, textarea');
-        fields.forEach(setGreekValidation);
+        fields.forEach(setFieldValidation);
 
         if(!contactForm.checkValidity()){
           contactForm.reportValidity();
@@ -723,7 +1024,7 @@
         }
 
         setSubmittingState(true);
-        setFormStatus('info', 'Αποστολή μηνύματος...');
+        setFormStatus('info', getCopy().sending, 'sending');
 
         const payload = Object.fromEntries(new FormData(contactForm).entries());
         const apiUrl = resolveContactApiUrl();
@@ -745,18 +1046,18 @@
             const firstValidationMessage = responseData?.errors
               ? Object.values(responseData.errors).flat()[0]
               : null;
-            const fallbackMessage = 'Παρουσιάστηκε σφάλμα κατά την αποστολή. Παρακαλώ δοκιμάστε ξανά.';
+            const fallbackMessage = getCopy().error;
             const errorMessage = firstValidationMessage || responseData?.detail || fallbackMessage;
             throw new Error(errorMessage);
           }
 
           contactForm.reset();
-          setFormStatus('success', responseData?.message || 'Το μήνυμά σας στάλθηκε επιτυχώς.');
+          setFormStatus('success', responseData?.message || getCopy().success, responseData?.message ? '' : 'success');
         } catch (error){
           const message = error instanceof Error
             ? error.message
-            : 'Παρουσιάστηκε σφάλμα κατά την αποστολή. Παρακαλώ δοκιμάστε ξανά.';
-          setFormStatus('error', message);
+            : getCopy().error;
+          setFormStatus('error', message, message === getCopy().error ? 'error' : '');
         } finally {
           setSubmittingState(false);
         }
@@ -764,6 +1065,8 @@
     }
 
     const track = document.getElementById('imageTrack');
+    const imageWindow = document.querySelector('.image-window');
+    const contactSection = document.getElementById('contact');
 
     let imageOffset = 0;
     let minImageOffset = 0;
@@ -771,12 +1074,13 @@
     let edgeVelocity = 0;
     let animationFrameId = null;
 
-    const followStrength = 0.072;
-    const edgeWheelStrength = 0.02;
-    const edgeSpring = 0.12;
-    const edgeDamping = 0.8;
-    const maxEdgeOvershoot = 16;
-    const edgeVelocityLimit = 4.5;
+    const baseImageOpacity = 0.56;
+    const followStrength = 0.11;
+    const edgeWheelStrength = 0.012;
+    const edgeSpring = 0.08;
+    const edgeDamping = 0.82;
+    const maxEdgeOvershoot = 10;
+    const edgeVelocityLimit = 3.2;
     const startImageOffset = -70;
 
     function clamp(value, min, max){
@@ -785,14 +1089,38 @@
 
     function renderTrack(){
       track.style.transform = `translate3d(0, ${imageOffset}px, 0)`;
+      if(imageWindow){
+        imageWindow.style.opacity = String(getImageFadeProgress());
+      }
+    }
+
+    function getHeroScrollLimit(){
+      if(!contactSection){
+        return Math.max(window.innerHeight, 1);
+      }
+
+      const fadeRunway = window.innerHeight * 0.35;
+      return Math.max(contactSection.offsetTop - fadeRunway, 1);
     }
 
     function getBaseImageOffset(){
       const scrollTop = window.scrollY || window.pageYOffset || 0;
-      const maxScrollTop = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      const progress = clamp(scrollTop / maxScrollTop, 0, 1);
+      const progress = clamp(scrollTop / getHeroScrollLimit(), 0, 1);
       const topOffset = Math.max(startImageOffset, minImageOffset);
       return topOffset + (minImageOffset - topOffset) * progress;
+    }
+
+    function getImageFadeProgress(){
+      if(!contactSection){
+        return baseImageOpacity;
+      }
+
+      const contactTop = contactSection.getBoundingClientRect().top;
+      const fadeStart = window.innerHeight * 0.9;
+      const fadeEnd = window.innerHeight * 0.22;
+      const fadeRange = Math.max(fadeStart - fadeEnd, 1);
+      const progress = clamp((contactTop - fadeEnd) / fadeRange, 0, 1);
+      return progress * baseImageOpacity;
     }
 
     function getPageEdgeState(){
@@ -839,7 +1167,8 @@
     function updateImageBounds(){
       const extraHeight = Math.max(track.offsetHeight - window.innerHeight, 0);
       minImageOffset = -extraHeight;
-      imageOffset = getBaseImageOffset();
+      const maxOffset = Math.max(startImageOffset, minImageOffset);
+      imageOffset = clamp(imageOffset, minImageOffset, maxOffset);
       renderTrack();
       startMomentum();
     }
@@ -860,6 +1189,7 @@
     window.addEventListener('scroll', startMomentum, { passive:true });
 
     window.addEventListener('resize', updateImageBounds);
+    window.SiteLanguage.createLanguageController(applyLanguage);
     updateImageBounds();
   </script>
 </body>
