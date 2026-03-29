@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f1d8d6" />
+  <link rel="icon" href="data:," />
   <title>Psychologimata</title>
   <meta name="description" content="Ιστοσελίδα ψυχολογικών υπηρεσιών με πληροφορίες για τις παρεχόμενες υπηρεσίες και φόρμα επικοινωνίας." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1060,21 +1061,16 @@
           }
 
           if(!response.ok){
-            const firstValidationMessage = responseData?.errors
-              ? Object.values(responseData.errors).flat()[0]
-              : null;
-            const fallbackMessage = getCopy().error;
-            const errorMessage = firstValidationMessage || responseData?.detail || fallbackMessage;
-            throw new Error(errorMessage);
+            throw new Error(getCopy().error);
           }
 
           contactForm.reset();
-          setFormStatus('success', responseData?.message || getCopy().success, responseData?.message ? '' : 'success');
+          setFormStatus('success', getCopy().success, 'success');
         } catch (error){
           const message = error instanceof Error
             ? error.message
             : getCopy().error;
-          setFormStatus('error', message, message === getCopy().error ? 'error' : '');
+          setFormStatus('error', message, 'error');
         } finally {
           setSubmittingState(false);
         }
