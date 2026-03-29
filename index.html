@@ -625,8 +625,12 @@
         <form class="contact-form" action="/api/contact" method="post" novalidate autocapitalize="none" data-api-url="https://psychologimata-enadcnckc8gdcraz.swedencentral-01.azurewebsites.net/api/contact">
           <div class="form-grid">
             <div class="field">
-              <label for="name" id="nameLabel">Όνομα</label>
-              <input id="name" name="name" type="text" autocomplete="name" required />
+              <label for="firstName" id="firstNameLabel">Όνομα</label>
+              <input id="firstName" name="firstName" type="text" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="lastName" id="lastNameLabel">Επώνυμο</label>
+              <input id="lastName" name="lastName" type="text" autocomplete="family-name" required />
             </div>
             <div class="field">
               <label for="email" id="emailLabel">Email</label>
@@ -698,7 +702,8 @@
     const overlayEmailLink = document.getElementById('overlayEmailLink');
     const contactEmailLink = document.getElementById('contactEmailLink');
     const metaDescription = document.querySelector('meta[name="description"]');
-    const nameLabel = document.getElementById('nameLabel');
+    const firstNameLabel = document.getElementById('firstNameLabel');
+    const lastNameLabel = document.getElementById('lastNameLabel');
     const emailLabel = document.getElementById('emailLabel');
     const phoneLabel = document.getElementById('phoneLabel');
     const subjectLabel = document.getElementById('subjectLabel');
@@ -734,8 +739,10 @@
         menuLinks:'Σύνδεσμοι μενού',
         profile:'Προφίλ',
         blog:'Blog - ενημερωτικό δελτίο',
-        email:'psychologimata@outlook.com',
-        name:'Όνομα',
+        emailAddress:'psychologimata@outlook.com',
+        emailLabel:'Ηλεκτρονικό ταχυδρομείο',
+        firstName:'Όνομα',
+        lastName:'Επώνυμο',
         phone:'Τηλέφωνο',
         subject:'Θέμα',
         message:'Μήνυμα',
@@ -769,8 +776,10 @@
         menuLinks:'Menu links',
         profile:'Profile',
         blog:'Blog - newsletter',
-        email:'psychologimata@outlook.com',
-        name:'Name',
+        emailAddress:'psychologimata@outlook.com',
+        emailLabel:'Email',
+        firstName:'First name',
+        lastName:'Last name',
         phone:'Phone',
         subject:'Subject',
         message:'Message',
@@ -816,9 +825,10 @@
       profileNavLink.textContent = copy.profile;
       blogNavLink.textContent = copy.blog;
       overlayAppointment.textContent = copy.appointmentOnly;
-      overlayEmailLink.textContent = copy.email;
-      nameLabel.textContent = copy.name;
-      emailLabel.textContent = copy.email;
+      overlayEmailLink.textContent = copy.emailAddress;
+      firstNameLabel.textContent = copy.firstName;
+      lastNameLabel.textContent = copy.lastName;
+      emailLabel.textContent = copy.emailLabel;
       phoneLabel.textContent = copy.phone;
       subjectLabel.textContent = copy.subject;
       messageLabel.textContent = copy.message;
@@ -866,6 +876,13 @@
 
     function launchMailDraft(){
       const mailtoUrl = 'mailto:psychologimata@outlook.com';
+      const outlookComposeUrl = 'https://outlook.live.com/mail/0/deeplink/compose?to=psychologimata%40outlook.com';
+      const isPreviewWindow = new URLSearchParams(window.location.search).has('serverWindowId');
+
+      if(isPreviewWindow){
+        window.open(outlookComposeUrl, '_blank', 'noopener');
+        return;
+      }
 
       try{
         if(window.top && window.top !== window){

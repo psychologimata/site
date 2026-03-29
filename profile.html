@@ -471,7 +471,7 @@
         profile:'Προφίλ',
         blog:'Blogs - ενημερωτικό δελτίο',
         appointmentOnly:'Κατόπιν ραντεβού',
-        email:'psychologimata@outlook.com'
+        emailAddress:'psychologimata@outlook.com'
       },
       en: {
         title:'Profile | Psychologimata',
@@ -493,7 +493,7 @@
         profile:'Profile',
         blog:'Blog - newsletter',
         appointmentOnly:'By appointment only',
-        email:'psychologimata@outlook.com'
+        emailAddress:'psychologimata@outlook.com'
       }
     };
 
@@ -526,7 +526,7 @@
       profileNavLink.textContent = copy.profile;
       blogNavLink.textContent = copy.blog;
       overlayAppointment.textContent = copy.appointmentOnly;
-      overlayEmailLink.textContent = copy.email;
+      overlayEmailLink.textContent = copy.emailAddress;
       document.querySelector('[data-lang-switcher]')?.setAttribute('aria-label', copy.languageSwitcher);
       langElBtn.setAttribute('aria-label', copy.languageGreek);
       langElBtn.setAttribute('title', copy.languageGreek);
@@ -554,6 +554,13 @@
 
     function launchMailDraft(){
       const mailtoUrl = 'mailto:psychologimata@outlook.com';
+      const outlookComposeUrl = 'https://outlook.live.com/mail/0/deeplink/compose?to=psychologimata%40outlook.com';
+      const isPreviewWindow = new URLSearchParams(window.location.search).has('serverWindowId');
+
+      if(isPreviewWindow){
+        window.open(outlookComposeUrl, '_blank', 'noopener');
+        return;
+      }
 
       try{
         if(window.top && window.top !== window){
